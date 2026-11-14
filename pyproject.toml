@@ -1,29 +1,29 @@
 [project]
-name = "everfit-mcp"
-version = "1.1.0"
-description = "Connect Everfit to Claude Code, ChatGPT and any AI agent through Cotlet.dev, a hosted MCP server. No Everfit API key needed."
+name = "pushpress-mcp"
+version = "1.0.0"
+description = "Connect PushPress to Claude Code, ChatGPT and any AI agent through Cotlet.dev, a hosted MCP server."
 readme = "README.md"
 license = "Elastic-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [{ name = "Cotlet.dev", email = "contact@cotlet.dev" }]
-keywords = ["everfit", "everfit api", "everfit mcp", "mcp server", "claude", "chatgpt", "ai agent", "cotlet"]
+keywords = ["pushpress", "pushpress api", "pushpress mcp", "mcp server", "claude", "chatgpt", "ai agent", "cotlet"]
 classifiers = ["Programming Language :: Python :: 3", "Topic :: Office/Business"]
 dependencies = []
 
 [project.urls]
-Homepage = "https://cotlet.dev/integrations/everfit-api-mcp-server?utm_source=pypi&utm_medium=package&utm_campaign=everfit"
-Source = "https://github.com/cotlet-connect/everfit-mcp"
+Homepage = "https://cotlet.dev/integrations/pushpress-api-mcp-server?utm_source=pypi&utm_medium=package&utm_campaign=pushpress"
+Source = "https://github.com/cotlet-connect/pushpress-mcp"
 
 [project.scripts]
-everfit-mcp = "everfit_agent:main"
+pushpress-mcp = "pushpress_agent:main"
 
 [build-system]
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel.force-include]
-"everfit_agent.py" = "everfit_agent.py"
+"pushpress_agent.py" = "pushpress_agent.py"
 
 [tool.hatch.build.targets.sdist]
-include = ["everfit_agent.py", "README.md", "LICENSE", "mcp.json", "Dockerfile", "glama.json", "skills", "examples", ".cursor"]
+include = ["pushpress_agent.py", "README.md", "LICENSE", "mcp.json", "Dockerfile", "glama.json", "examples", ".cursor"]

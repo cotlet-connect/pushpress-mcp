@@ -6,9 +6,9 @@
         "Authorization": "Bearer ${COTLET_API_KEY}"
       }
     },
-    "everfit": {
+    "pushpress": {
       "command": "uvx",
-      "args": ["everfit-mcp"],
+      "args": ["pushpress-mcp"],
       "env": {
         "COTLET_API_KEY": "${COTLET_API_KEY}"
       }

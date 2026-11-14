@@ -1,4 +1,4 @@
-# Example prompts for Everfit
+# Example prompts for PushPress
 
 - Which clients have been quiet recently, and what are their last workout and check-in dates?
 - Show me weight and waist trends for Sam Rivera over the last 30 days.

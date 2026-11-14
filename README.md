@@ -1,22 +1,24 @@
-# How to connect Everfit to ChatGPT, Claude and any AI agent
+# How to connect PushPress to ChatGPT, Claude and any AI agent
 
-**Yes, ChatGPT, Claude and other AI agents can work in your Everfit account.** Cotlet.dev connects your own signed-in Everfit account to any AI agent, so you can check in on quiet clients, review progress and manage coaching activity in plain words.
+**ChatGPT, Claude and other AI agents can work in your PushPress Core account.** Cotlet.dev connects your own signed-in PushPress staff account to an agent, workflow or script through hosted MCP and REST.
 
 ## What you can ask
 
-> Which clients have been quiet recently, and what are their last workout and check-in dates?
+> Which classes have open spots today, and who is on the waitlist?
 
-> Show me weight and waist trends for Sam Rivera over the last 30 days.
+> Check in the members on the 7:00 class roster.
 
-> Draft Inbox replies for clients who have not checked in this week, and show me the drafts first.
+> Show no-shows and late cancels for last week.
 
-> Assign the next program to the clients in my Monday coaching group after I review the list.
+> Pause a member plan while they are away, after I approve it.
 
-> List active clients with incomplete workouts and summarize their progress for this week.
+> Message the class roster, then cancel the class after I approve both steps.
 
 ## Connect in 2 minutes
 
-Get your API key at https://cotlet.dev/app and export it as `COTLET_API_KEY`.
+1. Create an account at [Cotlet.dev](https://cotlet.dev/signup?app=pushpress) and enable PushPress for agents.
+2. Sign in to PushPress Core with your staff login in Cotlet's Cloud Browser.
+3. Add `https://cotlet.dev/mcp/v1` to your agent. Chat apps sign in with Cotlet.dev; editors and scripts can use `COTLET_API_KEY`.
 
 ### Claude Code
 
@@ -26,96 +28,62 @@ claude mcp add --transport http cotlet https://cotlet.dev/mcp/v1 --header "Autho
 
 ### ChatGPT
 
-Settings → Apps → add connector URL `https://cotlet.dev/mcp/v1`, then sign in with Cotlet.dev. No API key needed.
+Settings -> Apps -> add connector URL `https://cotlet.dev/mcp/v1`, then sign in with Cotlet.dev. No PushPress API key is needed.
 
 ### Cursor
 
-Copy `.cursor/mcp.json` from this repo into your project:
-
-```json
-{
-  "mcpServers": {
-    "cotlet": {
-      "url": "https://cotlet.dev/mcp/v1",
-      "headers": {
-        "Authorization": "Bearer ${COTLET_API_KEY}"
-      }
-    }
-  }
-}
-```
+Copy `.cursor/mcp.json` from this repository into your project. It uses `COTLET_API_KEY` from your environment.
 
 ## Run it locally (stdio)
 
-This repo is a real MCP server. It speaks MCP over stdio, lists its Everfit tools without any key, and forwards every tool call to the hosted Cotlet.dev server. The hosted URL above stays the recommended way. Use this when your client only starts local servers.
+This repository includes a small stdio MCP server for clients that only start local processes. It forwards calls to the hosted Cotlet.dev service. The hosted URL remains the recommended setup.
 
 ```json
-{"mcpServers":{"everfit":{"command":"uvx","args":["everfit-mcp"],"env":{"COTLET_API_KEY":"your-key"}}}}
+{"mcpServers":{"pushpress":{"command":"uvx","args":["pushpress-mcp"],"env":{"COTLET_API_KEY":"your-key"}}}}
 ```
 
 Or with Docker:
 
 ```bash
-docker build -t everfit-mcp .
-docker run -i --rm -e COTLET_API_KEY everfit-mcp
+docker build -t pushpress-mcp .
+docker run -i --rm -e COTLET_API_KEY pushpress-mcp
 ```
 
-Tools: `everfit_guide`, `everfit_status`, `everfit_open`, `everfit_read`, `everfit_click`, `everfit_type`, `everfit_close`. Without `COTLET_API_KEY` a tool call answers: "Set COTLET_API_KEY. Get a key at https://cotlet.dev/app".
+The local server exposes guide, status, open, read, click, type and close helpers. The hosted PushPress connection exposes 14 tools for classes, rosters, check-ins, members, plans, no-show reports, messages and cancellations.
 
 ## Command line
 
-Python 3.10+, nothing else to install. From PyPI:
-
 ```bash
-pip install everfit-mcp        # or run it once: uvx everfit-mcp connect
-everfit-mcp connect
+pip install pushpress-mcp
+pushpress-mcp connect
+pushpress-mcp status
+pushpress-mcp guide
+pushpress-mcp tools
+pushpress-mcp serve
 ```
 
-Or straight from this repo:
+Keep `COTLET_API_KEY` in your credential store, never in a shared workflow export.
 
-```bash
-export COTLET_API_KEY="your-key"
-python3 everfit_agent.py connect   # ready config for Claude Code, Cursor, ChatGPT
-python3 everfit_agent.py status    # is Everfit ready in your Cotlet.dev account
-python3 everfit_agent.py guide     # Everfit screens and sign-in link
-python3 everfit_agent.py read      # open Everfit, read the page, close the browser
-python3 everfit_agent.py tools     # list Cotlet.dev tools
-python3 everfit_agent.py serve     # start the stdio MCP server (same as no argument)
-```
+## PushPress tools through Cotlet.dev
 
-## Questions from Everfit users
+The hosted connection works in your Core staff account and includes `list_classes`, `get_class_roster`, `book_class_reservation`, `check_in_member`, `remove_reservation`, `list_members`, `get_member`, `list_plan_templates`, `switch_member_plan`, `pause_member_plan`, `cancel_member_plan`, `list_no_shows_late_cancels`, `message_class_registrants` and `cancel_class`.
 
-**Does Everfit have an API for developers?**
+Six tools that change plans, send messages or cancel classes ask for your approval by default. Booking and check-in can be undone with `remove_reservation`. Use an admin Core login for plan changes and the No Show / Late Cancel report.
 
-Everfit has an API for Enterprise customers on the 500+ client plan. Cotlet.dev works in your own Everfit account directly and exposes coaching clients, workouts, progress, Inbox and task workflows through MCP and REST.
+## Does PushPress have an API or MCP server?
 
-**How do I connect Everfit to ChatGPT?**
+PushPress publishes a Platform API and an SDK, but they do not provide the staff workflows above. Cotlet works in your own Core login and is independent from PushPress. It is **not affiliated with PushPress, Inc.**
 
-Add Cotlet.dev as an app in ChatGPT using the MCP setup on this page, sign in to Everfit once in your Cotlet.dev Cloud Browser, and ask ChatGPT in plain words. No Everfit API key is needed.
+## Privacy and access
 
-**Is there a way to use Claude with Everfit?**
-
-Yes. Add the Cotlet.dev MCP URL as a custom connector in Claude or use the Claude Code command shown above. Claude then works in your own Everfit account.
-
-**Is there an Everfit MCP server?**
-
-Everfit does not publish a public MCP server. Cotlet.dev is a hosted MCP server that works in your Everfit account with ChatGPT, Claude, Cursor, Codex and other AI agents.
+Cotlet stores the signed-in Core profile encrypted and never stores your PushPress password. Your agent receives tool results, not the browser session cookie. Disable PushPress for agents, reset the browser or remove the staff login in Core to cut access.
 
 ## Find it on
 
-- [Everfit on Cotlet.dev](https://cotlet.dev/integrations/everfit-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=everfit&utm_content=find)
-- [PyPI package everfit-mcp](https://pypi.org/project/everfit-mcp/)
-- [Odel](https://odel.app/modules/cotlet/everfit)
-- [mcpbeat](https://mcpbeat.com/mcp-servers/cotlet/everfit/)
-- [Step-by-step guide (PDF) on Internet Archive](https://archive.org/details/cotlet-connect-everfit-to-ai-agents-guide)
-
-## Also works with
-
-
+- [PushPress on Cotlet.dev](https://cotlet.dev/integrations/pushpress-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=pushpress&utm_content=find)
+- [Step-by-step guide (PDF) on Internet Archive](https://archive.org/details/cotlet-connect-pushpress-to-ai-agents-guide)
 - [All apps connected through Cotlet.dev](https://github.com/cotlet-connect)
 
----
+More: https://cotlet.dev/integrations/pushpress-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=pushpress
 
-More: https://cotlet.dev/integrations/everfit-api-mcp-server?utm_source=github&utm_medium=readme&utm_campaign=everfit
-
-Start free: https://cotlet.dev/signup?app=everfit&utm_source=github&utm_medium=readme&utm_campaign=everfit
+Start free: https://cotlet.dev/signup?app=pushpress&utm_source=github&utm_medium=readme&utm_campaign=pushpress
