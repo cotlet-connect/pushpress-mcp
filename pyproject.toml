@@ -1,7 +1,7 @@
 [project]
 name = "pushpress-mcp"
 version = "1.0.0"
-description = "Connect PushPress to Claude Code, ChatGPT and any AI agent through Cotlet.dev, a hosted MCP server."
+description = "Unofficial PushPress API integration and MCP server by Cotlet: gym-owner jobs and your own Custom API."
 readme = "README.md"
 license = "Elastic-2.0"
 license-files = ["LICENSE"]
